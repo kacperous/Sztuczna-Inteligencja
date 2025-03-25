@@ -1,3 +1,5 @@
+from pathlib import Path
+
 def read_puzzle_file(filename):
     try:
         with open(filename, 'r') as file:
@@ -49,6 +51,24 @@ def read_puzzle_file(filename):
         raise ValueError(f"Error while reading file: {str(e)}")
     except Exception as e:
         raise Exception(f"Unexpected error: {str(e)}")
+
+def save_puzzle_file(solution, filename):
+    try:
+        solutions_dir = Path(__file__).parent / "solutions"
+        solutions_dir.mkdir(exist_ok=True)
+
+        output_filename = Path(filename).name
+        output_path = solutions_dir / output_filename
+
+        with open(output_path, 'w') as file:
+            if solution is None:
+                file.write('-1\n')
+            else:
+                file.write(f"{len(solution)}\n")
+                if solution:
+                    file.write(''.join(solution) + '\n')
+    except Exception as e:
+        raise Exception(f"Error while saving file: {str(e)}")
 
 def find_empty(state):
     for i in range(len(state)):
