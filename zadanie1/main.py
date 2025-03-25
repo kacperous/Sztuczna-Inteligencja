@@ -1,16 +1,17 @@
-# This is a sample Python script.
+from utils import read_puzzle_file
+from utils import find_empty
 
-# Press ⌃F5 to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+from pathlib import Path
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press F9 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    try:
+        current_dir = Path(__file__).parent
+        input_file = current_dir / "input" / "3x3_easy.txt"
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+        state, width, height = read_puzzle_file(str(input_file))
+        print(f"Wczytano układankę o wymiarach {height}x{width}:")
+        for row in state:
+            print(row)
+    except Exception as e:
+        print(e)
+
