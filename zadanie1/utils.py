@@ -57,4 +57,41 @@ def find_empty(state):
                 return i, j
     return None
 
+def get_possible_moves(state):
+    # Zwraca możliwe ruchy dla danego stanu
+    empty_y, empty_x = find_empty(state)
+    height = len(state)
+    width = len(state[0])
+    moves = []
 
+    if empty_x > 0:
+        moves.append('L')
+    if empty_x < width -1:
+        moves.append('R')
+    if empty_y > 0:
+        moves.append('U')
+    if empty_y < height - 1:
+        moves.append('D')
+
+    return moves
+
+
+def apply_move(state, move):
+    # Wykonuje ruch i zwraca nowy stan
+    new_state = [row[:] for row in state]
+    empty_y, empty_x = find_empty(new_state)
+
+    if move == 'L':
+        new_state[empty_y][empty_x], new_state[empty_y][empty_x - 1] = new_state[empty_y][empty_x - 1], \
+        new_state[empty_y][empty_x]
+    elif move == 'R':
+        new_state[empty_y][empty_x], new_state[empty_y][empty_x + 1] = new_state[empty_y][empty_x + 1], \
+        new_state[empty_y][empty_x]
+    elif move == 'U':
+        new_state[empty_y][empty_x], new_state[empty_y - 1][empty_x] = new_state[empty_y - 1][empty_x], \
+        new_state[empty_y][empty_x]
+    elif move == 'D':
+        new_state[empty_y][empty_x], new_state[empty_y + 1][empty_x] = new_state[empty_y + 1][empty_x], \
+        new_state[empty_y][empty_x]
+
+    return new_state
