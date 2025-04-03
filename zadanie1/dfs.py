@@ -1,9 +1,8 @@
 import time
-from pathlib import Path
-from input.puzzle import PuzzleState  # Upewnij się, że plik puzzle.py zawiera wymagany kod
+from puzzle import PuzzleState
 
 
-def apply_move(state, move):
+def apply_move(state, move): #get_possiblemove i apply_move masz dostępne w utils i nie uzywamy left right tylko LR
     """
     Wykonuje ruch w układance i zwraca nowy stan (planszę).
     """
@@ -40,7 +39,7 @@ def apply_move(state, move):
     return None
 
 
-def save_solution_file(file_path, solution):
+def save_solution_file(file_path, solution): #sprawdz plik utils
     """
     Zapisuje plik z rozwiązaniem układanki.
     :param file_path: Ścieżka do pliku z rozwiązaniem
@@ -54,7 +53,7 @@ def save_solution_file(file_path, solution):
             file.write(" ".join(solution) + "\n")
 
 
-def save_stats_file(file_path, stats, solution_length, elapsed_time):
+def save_stats_file(file_path, stats, solution_length, elapsed_time): #sprawdz plik utils
     """
     Zapisuje plik z dodatkowymi informacjami o działaniu algorytmu.
     :param file_path: Ścieżka do pliku z dodatkowymi informacjami
@@ -69,8 +68,7 @@ def save_stats_file(file_path, stats, solution_length, elapsed_time):
         file.write(f"{stats['max_depth']}\n")
         file.write(f"{elapsed_time:.3f}\n")
 
-
-def dfs_solver(initial_state, limit=20, solution_file="solution.txt", stats_file="stats.txt"):
+def dfs(initial_state, limit=20, solution_file="solution.txt", stats_file="stats.txt"): #solution file i stats file pokaje uzytkownik przy wywoływaiu
     """
     Rozwiązanie układanki przy użyciu DFS z ograniczeniem głębokości, zapisującej wyniki do plików.
     :param initial_state: Obiekt PuzzleState – układ początkowy

@@ -1,16 +1,10 @@
 from collections import deque
 import time
-from input.puzzle import PuzzleState
+from puzzle import PuzzleState
 from utils import get_possible_moves, apply_move
 
 
 def bfs(initial_state, order='LRUD'):
-    """
-    Algorytm BFS dla układanki
-    :param initial_state: początkowy stan układanki
-    :param order: kolejność sprawdzania ruchów
-    :return: (rozwiązanie, statystyki)
-    """
     start_time = time.time()
 
     initial = PuzzleState(initial_state)

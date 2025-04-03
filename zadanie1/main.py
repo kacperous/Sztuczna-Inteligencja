@@ -1,17 +1,8 @@
-<<<<<<< HEAD
-from utils import read_puzzle_file
-from utils import save_puzzle_file
-
-from input.puzzle import PuzzleState
-from dfs import dfs_solver
-
-=======
 import sys
 import argparse
->>>>>>> fa091ec531d5714de5731fd911ba01040ff18184
-from pathlib import Path
-from utils import read_puzzle, save_solution, save_stats, find_empty
+from utils import read_puzzle, save_solution, save_stats
 from bfs import bfs
+from dfs import dfs
 
 def main():
     parser = argparse.ArgumentParser(description='Program do rozwiązywania układanek przesuwnych.')
@@ -33,8 +24,16 @@ def main():
         if args.strategy.lower() == 'bfs':
             print(f"Uruchamianie algorytmu BFS z kolejnością ruchów: {args.param}...")
             solution, stats = bfs(state, args.param)
+        elif args.strategy.lower() == 'dfs':
+            print(f"Uruchamianie algorytmu DFS z kolejnością ruchów: {args.param}...")
+            solution, stats = dfs(state, args.param)
+        elif args.strategy.lower() == 'astr':
+            print(f"Uruchamianie algorytmu A* z heurystyką: {args.param}...")
+            # jak zaimplemetujemy to odkomentowac i bedzie dziaalc ładnie
+            # solution, stats = a_star(state, args.param)
+            print("Algorytm A* nie jest jeszcze zaimplementowany.")
+            return
         else:
-            # Obsługa pozostałych strategii zostanie dodana w przyszłości
             print(f"Strategia {args.strategy} nie jest jeszcze zaimplementowana.")
             return
 
@@ -50,29 +49,5 @@ def main():
         print(f"Błąd: {e}")
         sys.exit(1)
 
-<<<<<<< HEAD
 if __name__ == "__main__":
-
-    # Wczytaj układ z pliku tekstowego
-    current_dir = Path(__file__).parent
-    input_file = current_dir / "input" / "4x4_medium.txt"
-    state, width, height = read_puzzle_file(str(input_file))
-
-    # Tworzenie obiektu PuzzleState
-    initial_state = PuzzleState(state)
-
-    # Wywołanie dfs_solver z limitem głębokości 20
-    solution, stats = dfs_solver(initial_state, limit=20)
-
-    if solution:
-        print("Znaleziono rozwiązanie!")
-        print("Ścieżka ruchów:", solution)
-    else:
-        print("Nie znaleziono rozwiązania w ograniczeniu głębokości.")
-
-    print("Statystyki przeszukiwania:")
-    print(stats)
-=======
-if __name__ == '__main__':
     main()
->>>>>>> fa091ec531d5714de5731fd911ba01040ff18184
