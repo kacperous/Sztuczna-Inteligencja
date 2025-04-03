@@ -1,7 +1,7 @@
 from collections import deque
 import time
-from zadanie1.input.puzzle import PuzzleState
-from zadanie1.utils import get_possible_moves, apply_move
+from input.puzzle import PuzzleState
+from utils import get_possible_moves, apply_move
 
 
 def bfs(initial_state, order='LRUD'):

@@ -1,6 +1,7 @@
 from pathlib import Path
+from io import StringIO
 
-def read_puzzle_file(filename):
+def read_puzzle(filename):
     try:
         with open(filename, 'r') as file:
             lines = file.readlines()
@@ -52,7 +53,7 @@ def read_puzzle_file(filename):
     except Exception as e:
         raise Exception(f"Unexpected error: {str(e)}")
 
-def save_puzzle_file(solution, filename):
+def save_solution(solution, filename):
     try:
         solutions_dir = Path(__file__).parent / "solutions"
         solutions_dir.mkdir(exist_ok=True)
@@ -69,6 +70,17 @@ def save_puzzle_file(solution, filename):
                     file.write(''.join(solution) + '\n')
     except Exception as e:
         raise Exception(f"Error while saving file: {str(e)}")
+
+def save_stats(file_path, path, visited, processed, max_depth, elapsed):
+    output = StringIO()
+    output.write(f"{len(path) if path != '-1' else -1}\n")
+    output.write(f"{visited}\n")
+    output.write(f"{processed}\n")
+    output.write(f"{max_depth}\n")
+    output.write(f"{elapsed:.3f}\n")
+    with open(file_path, "w") as f:
+        f.write(output.getvalue())
+    output.close()
 
 def find_empty(state):
     for i in range(len(state)):
