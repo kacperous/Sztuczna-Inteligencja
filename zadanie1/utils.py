@@ -127,3 +127,16 @@ def apply_move(state, move):
         new_state[empty_y][empty_x]
 
     return new_state
+
+def get_goal_position(width, height):
+    # Zwraca pozycje docelowe dla każdego elementu
+    goal_state = {}
+    count = 1
+    for i in range(height):
+        for j in range(width):
+            if count == height * width:
+                goal_state[0] = (i, j)
+            else:
+                goal_state[count] = (i, j)
+            count += 1
+    return goal_state

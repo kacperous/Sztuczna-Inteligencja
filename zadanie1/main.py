@@ -3,6 +3,7 @@ import argparse
 from utils import read_puzzle, save_solution, save_stats
 from bfs import bfs
 from dfs import dfs
+from astar import astar
 
 def main():
     parser = argparse.ArgumentParser(description='Program do rozwiązywania układanek przesuwnych.')
@@ -27,12 +28,9 @@ def main():
         elif args.strategy.lower() == 'dfs':
             print(f"Uruchamianie algorytmu DFS z kolejnością ruchów: {args.param}...")
             solution, stats = dfs(state, args.param)
-        elif args.strategy.lower() == 'astr':
+        elif args.strategy.lower() == 'astar':
             print(f"Uruchamianie algorytmu A* z heurystyką: {args.param}...")
-            # jak zaimplemetujemy to odkomentowac i bedzie dziaalc ładnie
-            # solution, stats = a_star(state, args.param)
-            print("Algorytm A* nie jest jeszcze zaimplementowany.")
-            return
+            solution, stats = astar(state, args.param)
         else:
             print(f"Strategia {args.strategy} nie jest jeszcze zaimplementowana.")
             return

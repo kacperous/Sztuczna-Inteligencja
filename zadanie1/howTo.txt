@@ -4,4 +4,8 @@ składnia:
 program <strategy> <param> <input_file> <solution_file> <stats_file>
 
 przykład:
-py main.py bfs LRUD ./input/3x3_easy.txt ./solutions/3x3_east_sol.txt ./stats/3x3_easy_stats.txt
+py main.py bfs LRUD ./input/4x4_01_00001.txt ./solutions/4x4_01_00001_bfs_lrud_sol.txt ./stats/4x4_01_00001_bfs_lrud_stats.txt
+py main.py astar manh ./input/4x4_01_00001.txt ./solutions/4x4_01_00001_astar_manh_sol.txt ./stats/4x4_01_00001_astar_manh_stats.txt
+py main.py astar hamm ./input/4x4_01_00001.txt ./solutions/4x4_01_00001_astar_hamm_sol.txt ./stats/4x4_01_00001_astar_hamm_stats.txt
+
+żeby uruchomic wszytskie na raz to plik start.py
