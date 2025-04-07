@@ -24,4 +24,3 @@ class PuzzleState:
             path.append(current.action)
             current = current.parent
         return path[::-1]
-

@@ -7,7 +7,7 @@ from bfs import bfs
 from dfs import dfs
 from astar import astar
 
-#wykorzystujemy wiedze z sysopów ze procesy mogą byc przetwarzane równolegle (współbiegłość) ESSA
+#Przetwarzanie wątków współbieżnie
 def wykonaj_zadanie(args):
     plik, algo, param = args
     try:

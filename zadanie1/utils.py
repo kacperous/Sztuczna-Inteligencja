@@ -83,6 +83,7 @@ def save_stats(file_path, path, visited, processed, max_depth, elapsed):
     output.close()
 
 def find_empty(state):
+    #Znajduje pusty klocek (0) w planszy
     for i in range(len(state)):
         for j in range(len(state[i])):
             if state[i][j] == 0:
@@ -90,7 +91,7 @@ def find_empty(state):
     return None
 
 def get_possible_moves(state):
-    # Zwraca możliwe ruchy dla danego stanu
+    # Sprawdza gdzie można się ruszyć
     empty_y, empty_x = find_empty(state)
     height = len(state)
     width = len(state[0])

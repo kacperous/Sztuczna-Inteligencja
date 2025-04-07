@@ -1,12 +1,10 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 import re
 from pathlib import Path
 
 def read_stats_file(file_path):
-    """Odczytuje plik statystyk i zwraca dane jako słownik."""
     with open(file_path, 'r') as f:
         lines = f.readlines()
 
@@ -24,9 +22,7 @@ def read_stats_file(file_path):
     return None
 
 def extract_info_from_filename(filename):
-    """Wyciąga informacje z nazwy pliku statystyk."""
-    # Format: SIZE_DEPTH_ID_ALGORITHM_PARAM_stats.txt
-    # Np.: 4x4_01_00001_astar_hamm_stats.txt
+    # Wyciągamy informacje z nazwy pliku
     pattern = r'(\d+x\d+)_(\d+)_(\d+)_(\w+)_(\w+)_stats\.txt'
     match = re.match(pattern, filename)
 
@@ -42,7 +38,7 @@ def extract_info_from_filename(filename):
     return None
 
 def collect_stats(stats_dir):
-    """Zbiera statystyki ze wszystkich plików."""
+    # Zbiera wszystkie statystyki z plików w katalogu
     stats_list = []
 
     for file_name in os.listdir(stats_dir):
@@ -59,7 +55,7 @@ def collect_stats(stats_dir):
     return pd.DataFrame(stats_list)
 
 def create_algorithms_comparison(df, stat_name, stat_label, output_file):
-    """Tworzy wykres porównujący wszystkie algorytmy."""
+    # Tworzy wykres porównujący wszystkie algorytmy
     plt.figure(figsize=(10, 6))
 
     # Grupowanie po głębokości i algorytmie
@@ -87,7 +83,6 @@ def create_algorithms_comparison(df, stat_name, stat_label, output_file):
 
 
 def create_astar_comparison(df, stat_name, stat_label, output_file):
-    """Tworzy wykres porównujący heurystyki A*."""
     plt.figure(figsize=(10, 6))
 
     # Filtrowanie tylko dla A*
@@ -118,7 +113,6 @@ def create_astar_comparison(df, stat_name, stat_label, output_file):
 
 
 def create_bfs_comparison(df, stat_name, stat_label, output_file):
-    """Tworzy wykres porównujący kolejności ruchu dla BFS."""
     plt.figure(figsize=(12, 6))
 
     # Filtrowanie tylko dla BFS
@@ -149,7 +143,6 @@ def create_bfs_comparison(df, stat_name, stat_label, output_file):
 
 
 def create_dfs_comparison(df, stat_name, stat_label, output_file):
-    """Tworzy wykres porównujący kolejności ruchu dla DFS."""
     plt.figure(figsize=(12, 6))
 
     # Filtrowanie tylko dla DFS
