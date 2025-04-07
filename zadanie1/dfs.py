@@ -1,116 +1,78 @@
 import time
 from puzzle import PuzzleState
+from utils import get_possible_moves, apply_move
 
-
-def apply_move(state, move): #get_possiblemove i apply_move masz dostępne w utils i nie uzywamy left right tylko LR
-    """
-    Wykonuje ruch w układance i zwraca nowy stan (planszę).
-    """
-    width = len(state[0])
-    height = len(state)
-
-    zero_x, zero_y = next(
-        (i, j)
-        for i, row in enumerate(state)
-        for j, val in enumerate(row)
-        if val == 0
-    )
-
-    moves = {
-        "up": (zero_x - 1, zero_y),
-        "down": (zero_x + 1, zero_y),
-        "left": (zero_x, zero_y - 1),
-        "right": (zero_x, zero_y + 1),
-    }
-
-    if move not in moves:
-        return None
-
-    new_x, new_y = moves[move]
-
-    if 0 <= new_x < height and 0 <= new_y < width:
-        new_state = [row[:] for row in state]
-        new_state[zero_x][zero_y], new_state[new_x][new_y] = (
-            new_state[new_x][new_y],
-            new_state[zero_x][zero_y],
-        )
-        return new_state
-
-    return None
-
-
-def save_solution_file(file_path, solution): #sprawdz plik utils
-    """
-    Zapisuje plik z rozwiązaniem układanki.
-    :param file_path: Ścieżka do pliku z rozwiązaniem
-    :param solution: Lista ruchów rozwiązania lub None, jeśli brak rozwiązania
-    """
-    with open(file_path, "w") as file:
-        if solution is None:
-            file.write("-1\n")
-        else:
-            file.write(f"{len(solution)}\n")
-            file.write(" ".join(solution) + "\n")
-
-
-def save_stats_file(file_path, stats, solution_length, elapsed_time): #sprawdz plik utils
-    """
-    Zapisuje plik z dodatkowymi informacjami o działaniu algorytmu.
-    :param file_path: Ścieżka do pliku z dodatkowymi informacjami
-    :param stats: Słownik ze statystykami odwiedzin, przetwarzania itp.
-    :param solution_length: Długość rozwiązania (liczba ruchów) lub -1, jeśli brak rozwiązania
-    :param elapsed_time: Czas działania w milisekundach
-    """
-    with open(file_path, "w") as file:
-        file.write(f"{solution_length}\n")
-        file.write(f"{stats['visited']}\n")
-        file.write(f"{stats['processed']}\n")
-        file.write(f"{stats['max_depth']}\n")
-        file.write(f"{elapsed_time:.3f}\n")
-
-def dfs(initial_state, limit=20, solution_file="solution.txt", stats_file="stats.txt"): #solution file i stats file pokaje uzytkownik przy wywoływaiu
-    """
-    Rozwiązanie układanki przy użyciu DFS z ograniczeniem głębokości, zapisującej wyniki do plików.
-    :param initial_state: Obiekt PuzzleState – układ początkowy
-    :param limit: Ograniczenie głębokości DFS
-    :param solution_file: Ścieżka do pliku z rozwiązaniem
-    :param stats_file: Ścieżka do pliku z dodatkowymi informacjami
-    """
-    # Uruchomienie mierzenia czasu
+def dfs(initial_state, order='LRUD'):
     start_time = time.time()
 
-    stack = [initial_state]
-    visited = set()
-    stats = {"visited": 0, "processed": 0, "max_depth": 0}
+    # Maksymalna głębokość przeszukiwania (zabezpieczenie)
+    max_search_depth = 20
+
+    initial = PuzzleState(initial_state)
+    if initial.is_goal():
+        end_time = time.time()
+        stats = {
+            'visited': 1,
+            'processed': 0,
+            'max_depth': 0,
+            'time': (end_time - start_time) * 1000
+        }
+        return [], stats
+
+    # Używamy listy jako stosu LIFO
+    stack = [initial]
+    visited = {str(initial.state)}
+    visited_count = 1
+    processed_count = 0
+    max_depth = 0
 
     while stack:
-        current = stack.pop()
-        stats["processed"] += 1
+        current = stack.pop()  # Zdejmujemy element z końca stosu (LIFO)
+        processed_count += 1
 
-        if current.is_goal():
-            elapsed_time = (time.time() - start_time) * 1000  # Czas działania w ms
-            solution = current.get_solution_path()
-            save_solution_file(solution_file, solution)
-            save_stats_file(stats_file, stats, len(solution), elapsed_time)
-            return solution, stats
+        max_depth = max(max_depth, current.depth)
 
-        if current.depth > limit:
+        # Sprawdzamy czy nie osiągnęliśmy maksymalnej głębokości
+        if current.depth >= max_search_depth:
             continue
 
-        state_str = str(current.state)
+        # Generowanie i sortowanie możliwych ruchów według zadanego porządku
+        possible_moves = get_possible_moves(current.state)
+        sorted_moves = sorted(possible_moves, key=lambda x: order.index(x) if x in order else len(order))
 
-        if state_str not in visited:
-            visited.add(state_str)
-            stats["visited"] += 1
-            stats["max_depth"] = max(stats["max_depth"], current.depth)
+        # Odwracamy kolejność, by zachować priorytet z parametru order
+        # (w stosie ostatnio dodany jest pierwszym przetwarzanym)
+        sorted_moves.reverse()
 
-            for move in ["up", "down", "left", "right"]:
-                new_state = apply_move(current.state, move)
-                if new_state is not None and str(new_state) not in visited:
-                    stack.append(PuzzleState(new_state, parent=current, action=move, depth=current.depth + 1))
+        for move in sorted_moves:
+            new_state = apply_move(current.state, move)
+            state_str = str(new_state)
 
-    # Jeśli nie znaleziono rozwiązania
-    elapsed_time = (time.time() - start_time) * 1000  # Czas działania w ms
-    save_solution_file(solution_file, None)
-    save_stats_file(stats_file, stats, -1, elapsed_time)
-    return None, stats
+            if state_str not in visited:
+                child = PuzzleState(new_state, current, move, current.depth + 1)
+
+                if child.is_goal():
+                    # Znaleziono rozwiązanie
+                    solution = child.get_solution_path()
+                    end_time = time.time()
+                    stats = {
+                        'visited': visited_count,
+                        'processed': processed_count,
+                        'max_depth': max_depth,
+                        'time': (end_time - start_time) * 1000
+                    }
+                    return solution, stats
+
+                visited.add(state_str)
+                visited_count += 1
+                stack.append(child)
+
+    # Brak rozwiązania - zwracamy pustą listę zamiast None
+    end_time = time.time()
+    stats = {
+        'visited': visited_count,
+        'processed': processed_count,
+        'max_depth': max_depth,
+        'time': (end_time - start_time) * 1000
+    }
+    return [], stats  # Zmieniłem None na pustą listę
