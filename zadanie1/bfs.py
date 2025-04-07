@@ -41,6 +41,7 @@ def bfs(initial_state, order='LRUD'):
 
             if state_str not in visited:
                 child = PuzzleState(new_state, current, move, current.depth + 1)
+                max_depth = max(max_depth, child.depth)
 
                 if child.is_goal():
                     # Znaleziono rozwiązanie
